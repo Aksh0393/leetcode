@@ -1,3 +1,4 @@
+package revisit;
 class Solution {
 
     public static long count(long k, int rigthmost, int x) {
