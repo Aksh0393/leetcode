@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 class Solution {
     int n;
     int[][] t;
@@ -61,9 +63,9 @@ class Solution {
     public int maxCollectedFruits(int[][] grid) {
         n = grid.length;
         t = new int[n][n];
-        for (int[] row : t) {
+        for (int[] row : t)
             Arrays.fill(row, -1);
-        }
+
 
         // First child
         int firstChildScore = child1Collect(grid);
