@@ -3,7 +3,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -58,7 +57,7 @@ class Solution {
             }
 
         }
-            return list.stream().mapToInt(Integer::intValue).toArray();
+        return list.stream().mapToInt(Integer::intValue).toArray();
 
     }
 }
