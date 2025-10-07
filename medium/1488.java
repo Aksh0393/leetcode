@@ -6,7 +6,7 @@ class Solution {
         int[] result = new int[n];
         HashMap<Integer, Integer> map = new HashMap<>(); // lake -> last day it was filled
         TreeSet<Integer> dryDays = new TreeSet<>(); // days when it didn't rain
-        Arrays.fill(result, -1); // default value for dry days
+        Arrays.fill(result, 1); // default value for dry days
 
         for (int i = 0; i < n; i++) {
             int lake = rains[i];
