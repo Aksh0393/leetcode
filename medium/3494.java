@@ -1,21 +1,19 @@
 class Solution {
     public long minTime(int[] skill, int[] mana) {
-        int n = skill.length;
-        int m = mana.length;
-        long[] finishTime = new long[n]; // finishTime[i] = when wizard i finishes current potion
+        int m = skill.length;
+        int n = mana.length;
+        long[] finishTime = new long[m]; // finishTime[i] = when wizard i finishes current potion
 
-        for (int j = 0; j < m; ++j) {
-            finishTime[0] += (long) mana[j] * skill[0];
+        for (int currentMana : mana) {
+            finishTime[0] += skill[0] * currentMana;
+            for (int i = 1; i < m; i++)
+                finishTime[i] = Math.max(finishTime[i - 1], finishTime[i]) + skill[i] * currentMana;
 
-            for (int i = 1; i < n; ++i)
-                finishTime[i] = Math.max(finishTime[i], finishTime[i - 1]) + (long) mana[j] * skill[i];
-
-
-            for (int i = n - 1; i > 0; --i)
-                finishTime[i - 1] = finishTime[i] - (long) mana[j] * skill[i];
+            for (int i = m - 1; i > 0; i--)
+                finishTime[i - 1] = finishTime[i] - skill[i] * currentMana;
 
         }
 
-        return finishTime[n - 1];
+        return finishTime[m - 1];
     }
 }
