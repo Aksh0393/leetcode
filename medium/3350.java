@@ -1,11 +1,12 @@
 import java.util.List;
 
 class Solution {
-    public boolean hasIncreasingSubarrays(List<Integer> nums, int k) {
+    public int maxIncreasingSubarrays(List<Integer> nums) {
 
         int currRun = 1;
         int prevRun = 0;
         int n = nums.size();
+        int ans = 0;
         for (int i = 1; i < n; i++) {
             if (nums.get(i) > nums.get(i - 1))
                 currRun++;
@@ -14,14 +15,12 @@ class Solution {
                 currRun = 1;
             }
 
-            if (currRun >= 2 * k)
-                return true;
+            ans = Math.max(ans, currRun/2);
+            ans = Math.max(ans, Math.min(currRun, prevRun));
 
-            if (Math.min(currRun, prevRun) >= k)
-                return true;
 
         }
 
-        return false;
+        return ans;
     }
 }
