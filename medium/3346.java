@@ -1,65 +1,31 @@
-import java.util.*;
+import java.util.Arrays;
 
 class Solution {
-
     public int maxFrequency(int[] nums, int k, int numOperations) {
-        Arrays.sort(nums);
+        int maxEl = Arrays.stream(nums).max().getAsInt() + k;
+        int freq[] = new int[maxEl + 1];
+        for (int num : nums)
+            freq[num]++;
 
-        int ans = 0;
-        Map<Integer, Integer> numCount = new HashMap<>();
+        for (int i = 1; i <= maxEl; i++)
+            freq[i] += freq[i - 1];
 
-        int lastNumIndex = 0;
-        for (int i = 0; i < nums.length; ++i) {
-            if (nums[i] != nums[lastNumIndex]) {
-                numCount.put(nums[lastNumIndex], i - lastNumIndex);
-                ans = Math.max(ans, i - lastNumIndex);
-                lastNumIndex = i;
-            }
+        int result = 0;
+        for (int target = 0; target <= maxEl; target++) {
+
+            if (freq[target] == 0)
+                continue;
+
+            int left = Math.max(0, target - k);
+            int right = Math.min(target + k, maxEl);
+            int targetFreq = freq[target] - (target > 0 ? freq[target - 1] : 0);
+            int totalFreq = freq[right] - (left > 0 ? freq[left - 1] : 0);
+            int neededOperations = totalFreq - targetFreq;
+            int maxAchievableFreq = targetFreq + Math.min(neededOperations, numOperations);
+            result = Math.max(result, maxAchievableFreq);
+
         }
 
-        numCount.put(nums[lastNumIndex], nums.length - lastNumIndex);
-        ans = Math.max(ans, nums.length - lastNumIndex);
-
-        for (int i = nums[0]; i <= nums[nums.length - 1]; i++) {
-            int l = leftBound(nums, i - k);
-            int r = rightBound(nums, i + k);
-            int tempAns;
-            if (numCount.containsKey(i)) {
-                tempAns = Math.min(r - l + 1, numCount.get(i) + numOperations);
-            } else {
-                tempAns = Math.min(r - l + 1, numOperations);
-            }
-            ans = Math.max(ans, tempAns);
-        }
-
-        return ans;
-    }
-
-    private int leftBound(int[] nums, int value) {
-        int left = 0;
-        int right = nums.length - 1;
-        while (left < right) {
-            int mid = (left + right) / 2;
-            if (nums[mid] < value) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
-        }
-        return left;
-    }
-
-    private int rightBound(int[] nums, int value) {
-        int left = 0;
-        int right = nums.length - 1;
-        while (left < right) {
-            int mid = (left + right + 1) / 2;
-            if (nums[mid] > value) {
-                right = mid - 1;
-            } else {
-                left = mid;
-            }
-        }
-        return left;
+        return result;
     }
 }
