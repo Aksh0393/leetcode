@@ -1,19 +1,17 @@
 class Solution {
-    public boolean detectCapitalUse(String word) {
+    public int minDeletionSize(String[] strs) {
 
-        int capital = 0;
+        int k = strs[0].length();
+        int ans = 0;
 
-        for (char c : word.toCharArray())
-            if (Character.isUpperCase(c))
-                capital++;
-
-        if (capital == 0 || capital == word.length())
-            return true;
-
-        if (capital == 1 && Character.isUpperCase(word.charAt(0)))
-            return true;
-
-        return false;
-
+        for (int i = 0; i < k; i++) {
+            for (int j = 1; j < strs.length; j++) {
+                if (strs[j].charAt(i) < strs[j - 1].charAt(i)) {
+                    ans++;
+                    break;
+                }
+            }
+        }
+        return ans;
     }
 }
