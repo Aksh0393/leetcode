@@ -1,39 +1,45 @@
 class Solution {
-
     public double separateSquares(int[][] squares) {
-        double max_y = 0;
-        double total_area = 0;
-        for (int[] sq : squares) {
-            int y = sq[1];
-            int l = sq[2];
-            total_area += (double) l * l;
-            max_y = Math.max(max_y, (double) (y + l));
+        double totalArea = 0.0;
+        double epsilon = 1e-5;
+        double low = Double.MAX_VALUE;
+        double high = -Double.MAX_VALUE;
+        double result = 0.0;
+        for (int[] square : squares) {
+            double sideLength = square[2];
+            totalArea += sideLength * sideLength;
+            low = Math.min(low, square[1]);
+            high = Math.max(high, square[1]+ sideLength);
         }
+        while (high - low > epsilon) {
 
-        double lo = 0;
-        double hi = max_y;
-        double eps = 1e-5;
-        while (Math.abs(hi - lo) > eps) {
-            double mid = (hi + lo) / 2;
-            if (check(mid, squares, total_area)) {
-                hi = mid;
-            } else {
-                lo = mid;
-            }
+            double mid = low + (high - low) / 2.0;
+
+            if (check(squares, mid, totalArea)) {
+                high = mid;
+                result = mid;
+
+            } else
+                low = mid;
+
         }
-
-        return hi;
+        return result;
     }
 
-    private Boolean check(double limit_y, int[][] squares, double total_area) {
-        double area = 0;
-        for (int[] sq : squares) {
-            int y = sq[1];
-            int l = sq[2];
-            if (y < limit_y) {
-                area += (double) l * Math.min(limit_y - y, (double) l);
-            }
+    private boolean check(int[][] squares, double mid, double totalArea) {
+        double coveredArea =0.0;
+        for(int square[]:squares)
+        {
+            double sideLength = square[2];
+            double y = square[1];
+            double topY = y + sideLength;
+            double bottomY = y;
+            if(mid >=topY)
+                coveredArea+= sideLength*sideLength;
+            else if( mid > bottomY)
+                coveredArea+= sideLength* (mid - bottomY);
+            
         }
-        return area >= total_area / 2;
+        return coveredArea >= totalArea/2.0;
     }
 }
