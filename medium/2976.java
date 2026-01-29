@@ -1,6 +1,6 @@
 import java.util.Arrays;
 
-public class Solution {
+class Solution {
 
     private void FloydWarshall(long[][] distances, char[] original, char[] changed, int[] cost) {
         for (int i = 0; i < original.length; ++i) {
