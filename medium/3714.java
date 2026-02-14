@@ -1,116 +1,86 @@
-import java.util.*;
+import java.util.*;;
 
 class Solution {
 
-    static class Pair {
-        int d1, d2;
-
-        Pair(int d1, int d2) {
-            this.d1 = d1;
-            this.d2 = d2;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Pair)) return false;
-            Pair p = (Pair) o;
-            return d1 == p.d1 && d2 == p.d2;
-        }
-
-        @Override
-        public int hashCode() {
-            return 31 * d1 + d2;
-        }
-    }
-
+    record Pair(int a, int b) {
+    };
     public int longestBalanced(String s) {
-
-        char[] c = s.toCharArray();
-        int n = c.length;
-
         int res = 0;
-
-        //Case-1
-        int cur = 1;
-
-        for (int i = 1; i < n; i++) {
-            if (c[i] == c[i - 1]) {
-                cur++;
-            } else {
-                res = Math.max(res, cur);
-                cur = 1;
+        //case 1; aaaabcbc one char is same
+        int count =1; 
+        char a[] = s.toCharArray();
+        int n = a.length;
+        for(int i=1;i<n;i++)
+        {
+            if(a[i]==a[i-1])
+                count++;
+            else
+            {
+                res = Math.max(res,count);
+                count=1;
             }
         }
-        res = Math.max(res, cur);
 
-        //Case-2
-        res = Math.max(res, find2(c, 'a', 'b'));
-        res = Math.max(res, find2(c, 'a', 'c'));
-        res = Math.max(res, find2(c, 'b', 'c'));
+        res = Math.max(res,count);
 
-        
-        //Case-3
-        int ca = 0, cb = 0, cc = 0;
+        //case 2; two char same
+        res = Math.max(res, helper(a,'a','b'));
+        res = Math.max(res, helper(a,'b','c'));
+        res = Math.max(res, helper(a,'a','c'));
 
-        Map<Pair, Integer> mp = new HashMap<>();
+        //case 3; 3 char same
+        int countA=0, countB=0, countC=0;
+        Map<Pair,Integer> map = new HashMap<>();
 
-        for (int i = 0; i < n; i++) {
-
-            if (c[i] == 'a') ca++;
-            else if (c[i] == 'b') cb++;
-            else cc++;
-
-            if(ca == cb && ca == cc)
-                res = Math.max(res, ca+cb+cc);
-
-            Pair key = new Pair(ca - cb, ca - cc);
-
-            Integer prev = mp.get(key);
-            if (prev != null) {
-                res = Math.max(res, i - prev);
-            } else {
-                mp.put(key, i);
-            }
+        for(int i=0;i<n;i++)
+        {
+            if(a[i]=='a')
+                countA++;
+            else if(a[i]=='b')
+                countB++;
+            else
+                countC++;
+            if(countA == countB && countA == countC)
+                res = Math.max(res, countA+countB+countC);
+            Pair p = new Pair(countA-countB, countA-countC);
+            if(!map.containsKey(p))
+                map.put(p, i);
+            else
+                res = Math.max(res, i - map.get(p));
         }
 
         return res;
     }
 
-    private int find2(char[] c, char x, char y) {
-
-        int n = c.length;
-        int max_len = 0;
-
-        int[] first = new int[2 * n + 1];
-        Arrays.fill(first, -2);
-
-        int clear_idx = -1;
+    private int helper(char[] a, char c, char d) {
+        int n = a.length;
+        int firstDiff[] = new int[2*n+1];
+        Arrays.fill(firstDiff, -2);
+        firstDiff[n] = -1;
         int diff = n;
-
-        first[diff] = -1;
-
-        for (int i = 0; i < n; i++) {
-
-            if (c[i] != x && c[i] != y) {
-
-                clear_idx = i;
+        int badIndex = -1;
+        int res = 0;
+        // diff	- current count(x) - count(y)
+        // firstDiff[diff]	- earliest index where this diff was seen
+        // badIndex	- last index where an invalid character appeared
+        for(int i=0;i<n;i++)
+        {
+            if(a[i]!=c && a[i]!=d)
+            {
+                badIndex = i;
                 diff = n;
-                first[diff] = clear_idx;
-
-            } else {
-
-                if (c[i] == x) diff++;
+                firstDiff[diff] = i;
+            }
+            else{
+                if (a[i] == c) diff++;
                 else diff--;
+                if(firstDiff[diff] < badIndex)
+                    firstDiff[diff] = i;    
+                else
+                    res = Math.max(res, i - firstDiff[diff]);
 
-                if (first[diff] < clear_idx) {
-                    first[diff] = i;
-                } else {
-                    max_len = Math.max(max_len, i - first[diff]);
-                }
             }
         }
-
-        return max_len;
+        return res;
     }
 }
