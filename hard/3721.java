@@ -74,7 +74,7 @@ class Solution {
         }
      }
 
-         int findLeftMostZero(int i, int l, int r) {
+    int findLeftMostZero(int i, int l, int r) {
         propagate(i, l, r);
 
         if (segMin[i] > 0 || segMax[i] < 0) return -1;
