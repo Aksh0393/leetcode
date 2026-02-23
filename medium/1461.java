@@ -1,5 +1,4 @@
 import java.util.*;
-
 class Solution {
     public boolean hasAllCodes(String s, int k) {
         int needed = 1 << k; // Total number of codes = 2^k
